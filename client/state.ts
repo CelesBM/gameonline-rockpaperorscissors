@@ -3,7 +3,7 @@ import { runInThisContext } from "vm";
 import {ref, onValue} from "firebase/database"
 import { rtdb } from "./db";
 
-const API_BASE_URL = "http://localhost:1234";
+const API_BASE_URL = "http://localhost:3004";
    
 type Play = "rock" | "paper" | "scissor";
 type DataRoom = { id: number, }
@@ -15,7 +15,7 @@ const state = {
         "userName-2": "",
         "userId-1": "",
         "userId-2": "",
-        roomId: "",
+        roomid: "",
         rtdbRoomId: "",
         rtdb: {},
     },
@@ -112,8 +112,8 @@ const state = {
             })
             .then((res) => { return res.json() }
                  ).then((data: DataRoom) => {
-                     const roomId = data.id;
-                     currentState.roomid = roomId;
+                     const roomid = data.id;
+                     currentState.roomid = roomid;
                      this.setState(currentState);
                      //this.setRoomId(roomId);
                      //this.setState(currentState);
@@ -125,7 +125,7 @@ const state = {
 
     accessToRoom(callback?) {
         const currentState = this.getState();
-        const roomId = currentState.roomId;
+        const roomid = currentState.roomid;
         let userId = currentState["userId-1"] || currentState["userId-2"];
         
         if(currentState["userId-2"] == "") {
@@ -134,8 +134,8 @@ const state = {
             userId = currentState["userId-1"]
         }
 
-        if(currentState.roomId) {
-            fetch(API_BASE_URL + "/rooms/" + roomId + "?userid=" + userId, {
+        if(currentState.roomid) {
+            fetch(API_BASE_URL + "/rooms/" + roomid + "?userid=" + userId, {
                 method: "get",
                 headers: { "content-type": "application/json" },
             })
@@ -146,7 +146,8 @@ const state = {
                      callback ? callback() : false;
                     });
         } else {
-            console.error("roomId doesn't exist")
+            console.error("roomid doesn't exist")
+           
         }
     },
 

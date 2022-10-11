@@ -16,7 +16,7 @@ class ShareCode extends HTMLElement {
     <div class="container">
       <div class="container__text">
         <p class="sharecode">Compartí el código:</p>
-        <b class="code">${state.getState().roomId}</b>
+        <b class="code">${state.getState().roomid}</b>
         <p class="rival">con tu contrincante</p>
       </div>
         <div class="container-hands">
