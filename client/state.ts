@@ -43,12 +43,6 @@ const state = {
             currentState.rtdb = snap.val();
             this.setState(currentState); 
         })
-
-        //rtdb.ref("/rooms/" + currentState.rtdbRoomId)
-        //    .on("value", (snap)  {
-        //      currentState.rtdb = snap.val();
-        //      this.setState(currentState);          
-       //})
     },
 
     setName(userName) {
@@ -79,12 +73,13 @@ const state = {
 
     setRivalName(userRivalName) {
         const currentState = this.getState();
-        currentState["userName-2"] = userRivalName.value;
+        currentState["userName-2"] = userRivalName;
         this.setState(currentState);
     },
 
     signInRival(callback){
         const currentState = this.getState();
+        
         if(currentState["userName-2"]){
             fetch(API_BASE_URL + "/auth", {
                 method: "post",
@@ -115,8 +110,6 @@ const state = {
                      const roomid = data.id;
                      currentState.roomid = roomid;
                      this.setState(currentState);
-                     //this.setRoomId(roomId);
-                     //this.setState(currentState);
                      callback ? callback() : false;
                      })
             .catch(err => console.log(err))
@@ -125,6 +118,7 @@ const state = {
 
     accessToRoom(callback?) {
         const currentState = this.getState();
+
         const roomid = currentState.roomid;
         let userId = currentState["userId-1"] || currentState["userId-2"];
         

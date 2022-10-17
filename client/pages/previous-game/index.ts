@@ -22,12 +22,15 @@ class PreviousGame extends HTMLElement {
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             const target = e.target as any;
-            currentState.roomId = target.inputCode.value;
+            //currentState.roomId = target.inputCode.value;
+            currentState.roomId = target.code.value;
 
-            state.setRivalName(target.inputName.value);
+            //state.setRivalName(target.inputName.value);
+            state.setRivalName(target.name.value);
+
           //currentState.roomid = inputCode.value;
             state.signInRival(()=> {
-                state.setState(currentState);
+                //state.setState(currentState);
                 state.accessToRoom(()=> {
                     state.listenRoom()
                     Router.go("/instructions");
