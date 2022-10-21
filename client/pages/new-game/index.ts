@@ -4,7 +4,7 @@ import { state } from "../../state";
 export class NewGame extends HTMLElement {
 
     connectedCallback() {
-      const currentState = state.getState();
+      //const currentState = state.getState();
       this.render();
       const form = this.querySelector(".form");
 

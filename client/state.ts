@@ -7,7 +7,14 @@ const API_BASE_URL = "http://localhost:3004";
    
 type Play = "rock" | "paper" | "scissor";
 type DataRoom = { id: number, }
-    
+
+interface CreateRoom {
+    roomid: number,
+    rtdbRoomId: number,
+    ["userName-1"]: string,
+    ["userName-2"]: string
+  }
+ 
 const state = {
 
     data: {
@@ -79,9 +86,9 @@ const state = {
 
     signInRival(callback){
         const currentState = this.getState();
-        
+
         if(currentState["userName-2"]){
-            fetch(API_BASE_URL + "/auth", {
+            fetch(API_BASE_URL + "/signin", {
                 method: "post",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ name: currentState["userName-2"] })
@@ -90,7 +97,7 @@ const state = {
                  ).then((data) => {
                         currentState["userId-2"] = data.id;
                         this.setState(currentState);
-                        callback();
+                        callback ? callback() : false;
                  })
                  .catch(err => console.log(err))
         }
@@ -154,10 +161,10 @@ const state = {
           body: JSON.stringify({ name: currentState.name, id: currentState.id }),
         }).then(res => { return res.json() }
                ).then(data => {
-                   currentState.shortId = data.shortId;
-                   currentState.rtdbId = data.rtdbId;
-                   currentState.player = data.player;
-                   currentState.opponentPlayer = data.opponentPlayer;
+                   currentState.roomid = data.roomid;
+                   currentState.rtdbRoomId = data.rtdbRoomId;
+                   currentState["userName-1"] = data["userName-1"];
+                   currentState["userName-2"] = data["userName-2"];
                    this.setState(currentState);
                    callback ? callback() : false;
                    })

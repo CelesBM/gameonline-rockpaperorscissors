@@ -15,15 +15,15 @@ class PreviousGame extends HTMLElement {
         
         const button = this.shadow.querySelector(".button");
         const form =  this.shadow.querySelector(".form");
-        const inputCode = (this.shadow.querySelector(".input-code") as HTMLInputElement);    
-        const inputName = (this.shadow.querySelector(".input-name") as HTMLInputElement); 
+        //const inputCode = (this.shadow.querySelector(".input-code") as HTMLInputElement);    
+        //const inputName = (this.shadow.querySelector(".input-name") as HTMLInputElement); 
         //  hasta acá lee todo
   
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             const target = e.target as any;
             //currentState.roomId = target.inputCode.value;
-            currentState.roomId = target.code.value;
+            currentState.roomid = target.code.value;
 
             //state.setRivalName(target.inputName.value);
             state.setRivalName(target.name.value);

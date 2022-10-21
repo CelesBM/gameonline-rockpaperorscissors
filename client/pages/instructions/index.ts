@@ -26,11 +26,22 @@ class Instructions extends HTMLElement {
     </div>
     `;
 
-        const style = document.createElement("style")
+        const style = document.createElement("style");
+
         style.innerHTML=`
+        .container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        } 
+
+        .instructions{
+            font-family: 'Indie Flower', cursive;
+            font-size: 80px;
+        }
         `;
 
-    shadow.appendChild(style)
+       shadow.appendChild(style)
     };
   }
   
