@@ -3,7 +3,7 @@ import { runInThisContext } from "vm";
 import {ref, onValue} from "firebase/database"
 import { rtdb } from "./db";
 
-const API_BASE_URL = "http://localhost:3004";
+const API_BASE_URL = "http://localhost:3002";
    
 type Play = "rock" | "paper" | "scissor";
 type DataRoom = { id: number, }
@@ -170,7 +170,51 @@ const state = {
                    })
           .catch(err => console.log(err))
           
-      },   
+      },
+      
+      userOneReady(callback){
+        const currentState = this.getState();
+
+        if(currentState["userName-1"]){
+            fetch(API_BASE_URL + "/signin", {
+                method: "post",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ name: currentState["userName-1"] }),
+            }).then(res => { return res.json() }
+            ).then((data)=> {
+                currentState["userId-1"] == data.id;
+                this.setState(currentState);
+                //callback();
+                callback ? callback() : false;
+            });
+        } else {
+            console.error("userName-1 doesn't exist");
+        }
+      },
+
+      userTwoReady(callback){
+        const currentState = this.getState();
+
+        if(currentState["userName-2"]){
+            fetch(API_BASE_URL + "/signin", {
+                method: "post",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ name: currentState["userName-2"] }),
+            }).then(res => { return res.json() }
+            ).then((data)=> {
+                currentState["userId-2"] == data.id;
+                this.setState(currentState);
+                //callback();
+                callback ? callback() : false;
+            });
+        } else {
+            console.error("userName-2 doesn't exist");
+        }
+    },
+
 };
+
+
+
 
 export {state};

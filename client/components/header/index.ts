@@ -12,7 +12,6 @@ class Header extends HTMLElement {
         const div = document.createElement("div");
         const style = document.createElement("style");
         const currentState = state.getState();
-        //const userName = this.getAttribute("myName");
         const userName = currentState["userName-1"];
         const userRivalName = currentState["userName-2"];
         const roomid = currentState.roomid;
@@ -33,38 +32,18 @@ class Header extends HTMLElement {
         style.innerHTML = `
         .container{
             display: flex;
-            justify-content: space-between;
-            margin: 20px;
+            align-items: flex-end;
+            margin: -15px 0px 7px 0px;
             font-family: 'Indie Flower', cursive;
+            font-size: 25px;
+            line-height: 25px;
         }
 
         .container__users{
-
+            color: #ff8000;
+            margin-right: 220px;
         }
-
-        .myName{
-
-        }
-
-        .opponent{
-
-        }
-
-        .container__room{
-            
-            
-
-        }
-
-        .room{
-
-        }
-
-        .code{
-
-        }
-    
-        `
+        `;
        
         shadow.appendChild(div);
         shadow.appendChild(style);

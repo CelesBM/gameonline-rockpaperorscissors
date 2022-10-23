@@ -12,25 +12,27 @@ class Home extends HTMLElement {
         const shadow = this.attachShadow({mode: 'open'});
         
         shadow.innerHTML=`
-    <div class="container">
-        <h1 class="title">Piedra Papel ó Tijera</h1>
-          <button-new class="new">Nuevo Juego</button-new>
-          <button-room class="room">Ingresar a una sala</button-room>
-        <div class="container-hands">
-          <hands-comp class="hand" hand="rock"></hands-comp>
-          <hands-comp class="hand" hand="paper"></hands-comp>
-          <hands-comp class="hand" hand="scissor"></hands-comp>
+        <div class="container">
+            <h1 class="title">Piedra Papel ó Tijera</h1>
+                <button-new class="new">Nuevo Juego</button-new>
+                <button-room class="room">Ingresar a una sala</button-room>
+            <div class="container-hands">
+                <hands-comp class="hand" hand="rock"></hands-comp>
+                <hands-comp class="hand" hand="paper"></hands-comp>
+                <hands-comp class="hand" hand="scissor"></hands-comp>
+            </div>
         </div>
-    </div>
-    `;
+        `;
 
-        const style = document.createElement("style")
+        const style = document.createElement("style");
+
         style.innerHTML=`
         .container{
             display: flex;
             flex-direction: column;
             align-items: center;
         } 
+
         .title{
             font-family: 'Indie Flower', cursive;
             font-size: 80px;
@@ -44,6 +46,7 @@ class Home extends HTMLElement {
                  margin-top: 5%;
                  margin-bottom: -10px;
                 }}
+
         .new{
             margin-bottom: 10px;
         }
@@ -52,6 +55,7 @@ class Home extends HTMLElement {
                 margin-top: 9%;
                 margin-bottom: 40px
                 }}
+
         .container-hands{
             display: flex;
             top: 100px;
@@ -63,6 +67,7 @@ class Home extends HTMLElement {
                 top: 130px;
                 margin: 0px 600px
                 }}
+                
         .hand{
             margin: 0px 20px;
         }

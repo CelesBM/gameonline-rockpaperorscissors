@@ -4,7 +4,6 @@ import { state } from "../../state";
 export class NewGame extends HTMLElement {
 
     connectedCallback() {
-      //const currentState = state.getState();
       this.render();
       const form = this.querySelector(".form");
 
@@ -24,22 +23,22 @@ export class NewGame extends HTMLElement {
 
     render() {
       this.innerHTML = `
-    <div class="container" >
-      <h1 class="title">Piedra Papel ó Tijera</h1>
-        <form class="form">
-          <div>
-            <label class="form__label">Tu nombre</label>
+      <div class="container" >
+        <h1 class="title">Piedra Papel ó Tijera</h1>
+          <form class="form">
+            <div>
+              <label class="form__label">Tu nombre</label>
+            </div>
+              <input class="form__input" type="text" name="name">
+              <button class="form__button">Empezar</button>
+          </form>
+          <div class="container-hands">
+              <hands-comp class="hand" hand="rock"></hands-comp>
+              <hands-comp class="hand" hand="paper"></hands-comp>
+              <hands-comp class="hand" hand="scissor"></hands-comp>
           </div>
-            <input class="form__input" type="text" name="name">
-            <button class="form__button">Empezar</button>
-        </form>
-        <div class="container-hands">
-            <hands-comp class="hand" hand="rock"></hands-comp>
-            <hands-comp class="hand" hand="paper"></hands-comp>
-            <hands-comp class="hand" hand="scissor"></hands-comp>
-        </div>
-    </div>
-    `;
+      </div>
+      `;
 
       const style = document.createElement("style");
 
@@ -49,6 +48,7 @@ export class NewGame extends HTMLElement {
             flex-direction: column;
             align-items: center;
             }
+
       .title{
           font-family: 'Indie Flower', cursive;
           font-size: 80px;
@@ -63,15 +63,18 @@ export class NewGame extends HTMLElement {
                 margin-top: 5%;
                 margin-bottom: 92px;
                 }}
+
       form{
         display: flex;
         flex-direction: column;
         align-items: center;
         }
+
       .form__label{
          font-family: 'Odibee Sans', cursive;
          font-size: 47px;
          }
+
       .form__input{
             height: 40px;
             width: 265px;
@@ -82,6 +85,7 @@ export class NewGame extends HTMLElement {
             margin-bottom: 13px;
             text-align: center;
             }
+
       .form__button{
             font-family: 'Luckiest Guy', cursive;
             font-size: 27px;
@@ -103,6 +107,7 @@ export class NewGame extends HTMLElement {
                 top: 157px;
                 margin: 0px 600px
                 }}
+                
      .hand{
         margin: 0px 20px;
         }

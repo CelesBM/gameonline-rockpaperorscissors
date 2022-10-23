@@ -7,7 +7,7 @@ import { nanoid } from "nanoid";
 const app = express();
 app.use(express.json());
 app.use(cors());
-const port = 3004;
+const port = 3002;
 
 const usersCollection = firestore.collection("users");
 const roomsCollection = firestore.collection("rooms");

@@ -8,4 +8,5 @@ router.setRoutes([
     {path: "/previous-game", component: "previousgame-comp"},
     {path: "/sharecode-room", component: "sharecode-comp"},
     {path: "/instructions", component: "instructions-comp"},
+    {path: "/waiting-room", component: "waitingroom-comp"},
 ]);
