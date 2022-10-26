@@ -1,21 +1,33 @@
 import { Router } from "@vaadin/router";
+import { createInflateRaw } from "zlib";
 import { state } from "../../state";
 
 class WaitingRoom extends HTMLElement {
     shadow: ShadowRoot;
 
-    constructor() {
-      super();
-      this.render()
+    connectedCallback(){
+        this.render(); 
+        const currentState = state.getState();
+        
+        const interval = setInterval(()=> {
+            currentState.ready = true;
+            
+            if(currentState["player-1-ready"] == true && currentState["player-2-ready"] == true){
+                    clearInterval(interval);
+                    console.log("interval", currentState)
+                    Router.go("/game");
+                }
+                }, 5000);
     }
+
+   
   
     render(){
-        const shadow = this.attachShadow({mode: 'open'});
 
         const currentState = state.getState();
         const userRivalName = currentState["userName-2"];
         
-        shadow.innerHTML=`
+        this.innerHTML=`
         <div class="container">
             <header-comp class="header"></header-comp>
             <div class="container__text">
@@ -32,6 +44,20 @@ class WaitingRoom extends HTMLElement {
         const style = document.createElement("style");
 
         style.innerHTML=`
+        .container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        } 
+        
+        .container__text{
+            font-family: 'Indie Flower', cursive;
+            font-size: 45px;
+            text-align: center;
+            margin: 70px 40px 70px 40px;
+        }
+
         .container-hands{
             display: flex;
             top: 86px;
@@ -53,7 +79,7 @@ class WaitingRoom extends HTMLElement {
                 }};
         `;
 
-       shadow.appendChild(style)
+       this.appendChild(style)
     };
   }
   

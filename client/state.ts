@@ -22,10 +22,15 @@ const state = {
         "userName-2": "",
         "userId-1": "",
         "userId-2": "",
+        "player-1-ready": "",
+        "player-2-ready": "",
+        "online": "",
+        "ready": "",
         roomid: "",
         rtdbRoomId: "",
         rtdb: {},
     },
+
     listeners: [],
 
     getState() {
@@ -171,47 +176,43 @@ const state = {
           .catch(err => console.log(err))
           
       },
-      
-      userOneReady(callback){
-        const currentState = this.getState();
 
-        if(currentState["userName-1"]){
-            fetch(API_BASE_URL + "/signin", {
-                method: "post",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({ name: currentState["userName-1"] }),
-            }).then(res => { return res.json() }
-            ).then((data)=> {
-                currentState["userId-1"] == data.id;
-                this.setState(currentState);
-                //callback();
-                callback ? callback() : false;
-            });
-        } else {
-            console.error("userName-1 doesn't exist");
-        }
-      },
 
-      userTwoReady(callback){
-        const currentState = this.getState();
 
-        if(currentState["userName-2"]){
-            fetch(API_BASE_URL + "/signin", {
-                method: "post",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({ name: currentState["userName-2"] }),
-            }).then(res => { return res.json() }
-            ).then((data)=> {
-                currentState["userId-2"] == data.id;
-                this.setState(currentState);
-                //callback();
-                callback ? callback() : false;
-            });
-        } else {
-            console.error("userName-2 doesn't exist");
-        }
+
+
+      playerReady(callback){
+            
+        const currentState = state.getState();
+
+        const rtdbRoomId = currentState.rtdbRoomId;
+        //ver en el server
+        fetch(API_BASE_URL + "/rooms/" + rtdbRoomId + "/players", {
+            method: "post",
+            headers:{ "content-type": "application/json" },
+            body: JSON.stringify({
+                name: currentState.name,
+                userId : currentState.userId,
+                //serverId: currentState.serverId,
+                online: currentState.online,
+                ready: currentState.ready,
+                roomid:currentState.roomid,
+                //myPlay: currentState.myPlay
+            })
+        }).then((res)=> { return res.json() })
+          .then((data)=> {
+            console.log("data", data);
+            callback ? callback() : false;
+            //if(callback) callback();
+        })
+        
     },
 
+
+
+
+
+      
 };
 
 

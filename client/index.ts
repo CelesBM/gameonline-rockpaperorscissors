@@ -8,6 +8,7 @@ import "./pages/previous-game";
 import "./pages/sharecode-room";
 import "./pages/instructions";
 import "./pages/waiting-room";
+import "./pages/game";
 import "./router";
 import { Router } from "@vaadin/router";
 
