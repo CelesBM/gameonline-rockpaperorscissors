@@ -8,18 +8,27 @@ class WaitingRoom extends HTMLElement {
     connectedCallback(){
         this.render(); 
         const currentState = state.getState();
-        
-        const interval = setInterval(()=> {
-            currentState.ready = true;
-            
-            if(currentState["player-1-ready"] == true && currentState["player-2-ready"] == true){
-                    clearInterval(interval);
-                    console.log("interval", currentState)
-                    Router.go("/game");
-                }
-                }, 5000);
-    }
 
+        state.listenRoom()
+        state.subscribe(()=> {
+
+            const interval = setInterval(()=> {
+            currentState.ready = true;
+                
+            if(currentState["player-1-ready"] == true && currentState["player-2-ready"] == true){
+                
+                clearInterval(interval);
+                    console.log("interval", currentState)
+                    //state.listenRoom();
+                    Router.go("/game");
+                    }
+            }, 5000);
+
+        })
+        
+        state.setState(currentState);
+    }
+   
    
   
     render(){
