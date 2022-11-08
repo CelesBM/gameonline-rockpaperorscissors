@@ -21,6 +21,10 @@ class PreviousGame extends HTMLElement {
             const target = e.target as any;
             currentState.roomid = target.code.value;
 
+            state.signIn(()=> {
+                state.listenRoom();
+            })
+
             state.setRivalName(target.name.value);
             state.signInRival(()=> {
                 state.accessToRoom(()=> {

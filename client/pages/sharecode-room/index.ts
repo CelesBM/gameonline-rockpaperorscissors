@@ -3,16 +3,32 @@ import { state } from "../../state";
 
 class ShareCode extends HTMLElement {
     shadow: ShadowRoot;
-
+    
     constructor() {
       super();
-      this.render()
+      this.shadow = this.attachShadow({ mode: 'open'});
     }
-  
+
+    //tiene que escuchar que hace el otro jugador y, cuando este en linea, ir a las instrucciones.
+    connectedCallback() {
+        this.render(); 
+        const currentState = state.getState();
+
+        state.listenRoom()
+        state.subscribe(()=> {
+            
+            if(window.location.pathname.toString() == "/sharecode-room" && 
+               //currentState["userReady-1"] == true && currentState["userReady-2"] == true){
+            currentState.playerOneReady == true && currentState.playerTwoReady == true){
+                Router.go("/instructions");
+            }
+        })
+      }
+
     render(){
-        const shadow = this.attachShadow({mode: 'open'});
+        const div = document.createElement("div");
         
-        shadow.innerHTML=`
+        div.innerHTML=`
         <div class="container">
             <div class="container__text">
                 <p class="sharecode">Compartí el código:</p>
@@ -71,7 +87,8 @@ class ShareCode extends HTMLElement {
                 }};
         `;
 
-    shadow.appendChild(style)
+    this.shadow.appendChild(style);
+    this.shadow.appendChild(div);
     };
   }
   

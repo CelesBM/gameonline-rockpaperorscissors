@@ -14,16 +14,16 @@ class WaitingRoom extends HTMLElement {
 
             const interval = setInterval(()=> {
             currentState.ready = true;
+
+
+ // if(currentState.ready() == true ){ 
+
+
                 
             if(currentState["player-1-ready"] == true && currentState["player-2-ready"] == true){
-                
-                clearInterval(interval);
-                    console.log("interval", currentState)
-                    //state.listenRoom();
-                    Router.go("/game");
-                    }
-            }, 5000);
-
+               clearInterval(interval);
+               Router.go("/game");
+            }}, 5000);
         })
         
         state.setState(currentState);
@@ -34,13 +34,13 @@ class WaitingRoom extends HTMLElement {
     render(){
 
         const currentState = state.getState();
-        const userRivalName = currentState["userName-2"];
+        const userNewGame = currentState["userName-1"];
         
         this.innerHTML=`
         <div class="container">
             <header-comp class="header"></header-comp>
             <div class="container__text">
-                <p class="text">Esperando a que ${userRivalName} presione ¡Jugar! ...</p>
+                <p class="text">Esperando a que ${userNewGame} presione ¡Jugar! ...</p>
             </div> 
             <div class="container-hands">
                 <hands-comp class="hand" hand="rock"></hands-comp>

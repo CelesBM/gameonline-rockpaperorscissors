@@ -10,10 +10,11 @@ type DataRoom = { id: number, }
 
 interface CreateRoom {
     roomid: number,
-    rtdbRoomId: number,
+    rtdbRoomid: number,
     ["userName-1"]: string,
     ["userName-2"]: string
   }
+
  
 const state = {
 
@@ -22,12 +23,11 @@ const state = {
         "userName-2": "",
         "userId-1": "",
         "userId-2": "",
-        "player-1-ready": "",
-        "player-2-ready": "",
-        "online": "",
+        "userReady-1": false,
+        "userReady-2": false,
         "ready": "",
         roomid: "",
-        rtdbRoomId: "",
+        rtdbRoomid: "",
         rtdb: {},
     },
 
@@ -50,9 +50,11 @@ const state = {
     listenRoom(){
         const currentState = this.getState();
 
-        const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomId);
+        const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
         onValue(roomRef, (snap)=> {
             currentState.rtdb = snap.val();
+            const playerOneReady = snap.val()["userReady-1"];
+            const playerTwoReady = snap.val()["userReady-2"];
             this.setState(currentState); 
         })
     },
@@ -147,7 +149,7 @@ const state = {
             })
             .then((res) => { return res.json() }
                  ).then((data) => {
-                     currentState.rtdbRoomId = data.rtdbRoomId;
+                     currentState.rtdbRoomid = data.rtdbRoomid;
                      this.setState(currentState);
                      callback ? callback() : false;
                     });
@@ -167,7 +169,7 @@ const state = {
         }).then(res => { return res.json() }
                ).then(data => {
                    currentState.roomid = data.roomid;
-                   currentState.rtdbRoomId = data.rtdbRoomId;
+                   currentState.rtdbRoomid = data.rtdbRoomid;
                    currentState["userName-1"] = data["userName-1"];
                    currentState["userName-2"] = data["userName-2"];
                    this.setState(currentState);
@@ -180,40 +182,17 @@ const state = {
 
 
 
-
-      playerReady(callback){
-            
-        const currentState = state.getState();
-
-        const rtdbRoomId = currentState.rtdbRoomId;
-        //ver en el server
-        fetch(API_BASE_URL + "/rooms/" + rtdbRoomId + "/players", {
-            method: "post",
-            headers:{ "content-type": "application/json" },
-            body: JSON.stringify({
-                name: currentState.name,
-                userId : currentState.userId,
-                //serverId: currentState.serverId,
-                online: currentState.online,
-                ready: currentState.ready,
-                roomid:currentState.roomid,
-                //myPlay: currentState.myPlay
-            })
-        }).then((res)=> { return res.json() })
-          .then((data)=> {
-            console.log("data", data);
-            callback ? callback() : false;
-            //if(callback) callback();
-        })
+       
+        }
         
-    },
+    
 
 
 
 
 
       
-};
+
 
 
 

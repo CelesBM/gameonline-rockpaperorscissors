@@ -4,21 +4,22 @@ import { state } from "../../state";
 class Game extends HTMLElement {
     shadow: ShadowRoot;
 
-    connectedCallback(){
-        this.render(); 
-        const buttonEl = this.querySelector(".button")
-        const currentState = state.getState();
+    constructor(){
+        super();
+        this.shadow = this.attachShadow({ mode: "open" });
+        this.render();
     }
-  
+
     render(){
 
-        this.innerHTML = `
+        const currentState = state.getState();
+        var timer: number = 4;
+        const div = document.createElement("div");
+    
+
+        div.innerHTML = `
         <div class="container">
-            <header-comp class="header"></header-comp>
-            <div class="container__text">
-                <p class="instructions">GAME</p>
-                <button class="button">¡Jugar!</button>
-            </div>
+            <p class="timer"></p>
             <div class="container-hands">
                 <hands-comp class="hand" hand="rock"></hands-comp>
                 <hands-comp class="hand" hand="paper"></hands-comp>
