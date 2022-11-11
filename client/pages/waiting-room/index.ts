@@ -12,19 +12,10 @@ class WaitingRoom extends HTMLElement {
         state.listenRoom()
         state.subscribe(()=> {
 
-            const interval = setInterval(()=> {
-            currentState.ready = true;
-
-
- // if(currentState.ready() == true ){ 
-
-
-                
-            if(currentState["player-1-ready"] == true && currentState["player-2-ready"] == true){
-               clearInterval(interval);
-               Router.go("/game");
-            }}, 5000);
-        })
+            const waitingRoom = location.pathname == "/waiting-room";
+            if(waitingRoom && currentState.playerOneOnline == true && currentState.playerTwOnline == true){
+                Router.go("/instructions");
+        }})
         
         state.setState(currentState);
     }

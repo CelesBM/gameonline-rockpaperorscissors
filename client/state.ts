@@ -23,6 +23,8 @@ const state = {
         "userName-2": "",
         "userId-1": "",
         "userId-2": "",
+        "userOnline-1": false,
+        "userOnline-2": false,
         "userReady-1": false,
         "userReady-2": false,
         "ready": "",
@@ -53,8 +55,8 @@ const state = {
         const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
         onValue(roomRef, (snap)=> {
             currentState.rtdb = snap.val();
-            const playerOneReady = snap.val()["userReady-1"];
-            const playerTwoReady = snap.val()["userReady-2"];
+            const playerOneOnline = snap.val()["userOnline-1"];
+            const playerTwoOnline = snap.val()["userOnline-2"];
             this.setState(currentState); 
         })
     },
