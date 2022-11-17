@@ -1,65 +1,80 @@
 import { Router } from "@vaadin/router";
 import { state } from "../../state";
 
+
 class Game extends HTMLElement {
     shadow: ShadowRoot;
+    userName: string;
+    rivalName: string;
+    roomid: any;
+    timer: any;
 
-    constructor(){
+    constructor() {
         super();
-        this.shadow = this.attachShadow({ mode: "open" });
+        this.shadow = this.attachShadow({ mode: 'open'});
+        //this.userName = state.getState().userName;
+        //this.rivalName = state.getState().rivalName;
+        //this.roomid = state.getState().roomid;
         this.render();
-    }
+      }
 
-    render(){
-
+    render() {
         const currentState = state.getState();
-        var timer: number = 4;
-        const div = document.createElement("div");
-    
 
-        div.innerHTML = `
+        const div = document.createElement("div");
+        
+        div.innerHTML= `
         <div class="container">
-            <p class="timer"></p>
+            <p class="number">5</p>
             <div class="container-hands">
                 <hands-comp class="hand" hand="rock"></hands-comp>
                 <hands-comp class="hand" hand="paper"></hands-comp>
                 <hands-comp class="hand" hand="scissor"></hands-comp>
             </div>
         </div>
-        `;
+      `;
 
-        const style = document.createElement("style");
+      const handEl = div.querySelectorAll("hands-comp");
+      
+      handEl.forEach((e)=> {
+        e.addEventListener("click", ()=>{
+            const move = e.getAttribute("hand");
+            if(move == "rock"){
+                clearTimeout(this.timer);
+                state.setMove("piedra").then(()=> {
+                    Router.go("/waiting-room")
+                })
+            }
+            if(move == "paper"){
+                clearTimeout(this.timer);
+                state.setMove("papel").then(()=> {
+                    Router.go("/waiting-room")
+                })
+            }
+            if(move == "scissor"){
+                clearTimeout(this.timer);
+                state.setMove("tijera").then(()=> {
+                    Router.go("/waiting-room")
+                })
+            }
+            
+        })
+      })
 
-        style.innerHTML=`
-        .container{
+      const style = document.createElement("style");
+
+      style.innerHTML=`
+      .container{
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
+            }
 
-        .container-hands{
-            display: flex;
-            top: 86px;
-            position: relative;
-            margin: -15px 60px
-        }
-                @media (min-width: 769px) {
-                .container-hands{        
-                top: 157px;
-                margin: 0px 600px
-                }}
-                
-        .hand{
-            margin: 0px 20px;
-        }
-                @media (min-width: 769px) {
-                .hand{        
-                margin: 0px 100px;
-                }};
-        `;
+      `;
 
-       this.appendChild(style);
-    };
+    this.appendChild(div);
+    this.appendChild(style);
+    }
   }
-  
+
   customElements.define("game-comp", Game);

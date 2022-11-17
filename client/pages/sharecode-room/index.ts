@@ -16,12 +16,16 @@ class ShareCode extends HTMLElement {
 
         state.listenRoom()
         state.subscribe(()=> {
+            //probando
+            state.setOnline();
             
-            if(window.location.pathname.toString() == "/sharecode-room" && 
-               //currentState["userReady-1"] == true && currentState["userReady-2"] == true){
-            currentState.playerOneReady == true && currentState.playerTwoReady == true){
-                Router.go("/instructions");
-            }
+
+
+            //esto estaba antes
+            //if(window.location.pathname.toString() == "/sharecode-room" && 
+            //currentState.playerOneOnline == true && currentState.playerTwoOnline == true){
+            //    Router.go("/instructions");
+            //}
         })
       }
 
