@@ -14,10 +14,10 @@ class ShareCode extends HTMLElement {
         this.render(); 
         const currentState = state.getState();
 
-        state.listenRoom()
-        state.subscribe(()=> {
+        //state.listenRoom()
+        //state.subscribe(()=> {
             //probando
-            state.setOnline();
+        //    state.setOnline();
             
 
 
@@ -26,7 +26,7 @@ class ShareCode extends HTMLElement {
             //currentState.playerOneOnline == true && currentState.playerTwoOnline == true){
             //    Router.go("/instructions");
             //}
-        })
+        //})
       }
 
     render(){

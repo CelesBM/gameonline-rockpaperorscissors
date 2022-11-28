@@ -29,6 +29,7 @@ const state = {
         "ready": "",
 
         online: { 
+            "prueba": false,
             ["userOnline-1"]: false,
             ["userOnline-2"]: false
         }, 

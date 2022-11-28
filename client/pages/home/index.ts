@@ -16,6 +16,10 @@ class Home extends HTMLElement {
             <h1 class="title">Piedra Papel ó Tijera</h1>
                 <button-new class="new">Nuevo Juego</button-new>
                 <button-room class="room">Ingresar a una sala</button-room>
+
+                <button-room class="test">TEST</button-room>
+
+
             <div class="container-hands">
                 <hands-comp class="hand" hand="rock"></hands-comp>
                 <hands-comp class="hand" hand="paper"></hands-comp>
@@ -87,7 +91,17 @@ class Home extends HTMLElement {
     const buttonRoomEl = shadow.querySelector(".room")
     buttonRoomEl.addEventListener("click", ()=>{
         Router.go("previous-game")
-    })
+    });
+
+    //para probar el online
+    const test = shadow.querySelector(".test")
+    test.addEventListener("click", ()=>{
+        Router.go("test")
+    });
+
+
+
+
     }
   }
   
