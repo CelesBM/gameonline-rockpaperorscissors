@@ -23,7 +23,7 @@ class Test extends HTMLElement {
                     console.log("player online")
                 }
         })
-
+        
         state.setState(currentState)
 
 

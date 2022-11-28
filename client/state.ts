@@ -67,18 +67,15 @@ const state = {
 
     listenRoom(){
         const currentState = this.getState();
-        //const online = this.data.online;
-        //console.log("online", online)
 
         const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
+       
         onValue(roomRef, (snap)=> {
             currentState.rtdb = snap.val();
             this.setState(currentState);
         })
 
         console.log("listenRoom", currentState)
-        
-     
     },
 
     setName(userName) {
