@@ -5,6 +5,7 @@ import { rtdb } from "./db";
 import { captureRejectionSymbol } from "events";
 //import { Router } from "express";
 import { Router } from "@vaadin/router";
+import { callbackify } from "util";
 
 const API_BASE_URL = "http://localhost:3004";
    
@@ -24,15 +25,11 @@ const state = {
         "userId-1": "",
         "userId-2": "",
         "aca estaba el userOnline": "",
+        "userOnline-1": false,
+        "userOnline-2": false,
         "userReady-1": false,
         "userReady-2": false,
         "ready": "",
-
-        online: { 
-            "prueba": false,
-            ["userOnline-1"]: false,
-            ["userOnline-2"]: false
-        }, 
 
         roomid: "",
         rtdbRoomid: "",
@@ -65,7 +62,7 @@ const state = {
         this.listeners.push(callback);
     },
 
-    listenRoom(){
+    listenRoom(callback?){
         const currentState = this.getState();
 
         const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
@@ -73,6 +70,7 @@ const state = {
         onValue(roomRef, (snap)=> {
             currentState.rtdb = snap.val();
             this.setState(currentState);
+            callback ? callback() : false;
         })
 
         console.log("listenRoom", currentState)
@@ -90,7 +88,8 @@ const state = {
         if(currentState["userName-1"]) {
             fetch(API_BASE_URL + "/signin", {
                 method: "post",
-                headers: { "content-type": "application/json" },
+                headers: { "content-type": "application/json", 
+                           "Cross-Origin-Resource-Policy": "cross-origin"},
                 body: JSON.stringify({ name: currentState["userName-1"] }),
             })
            .then((res) => { return res.json() } 
@@ -116,7 +115,8 @@ const state = {
         if(currentState["userName-2"]){
             fetch(API_BASE_URL + "/signin", {
                 method: "post",
-                headers: { "content-type": "application/json" },
+                headers: { "content-type": "application/json", 
+                           "Cross-Origin-Resource-Policy": "cross-origin"},
                 body: JSON.stringify({ name: currentState["userName-2"] })
             })
             .then((res) => { return res.json() }
@@ -135,7 +135,8 @@ const state = {
         if(currentState["userId-1"]) {
             fetch(API_BASE_URL + "/rooms", {
                 method: "post",
-                headers: { "content-type": "application/json" },
+                headers: { "content-type": "application/json",
+                            "Cross-Origin-Resource-Policy": "cross-origin" },
                 body: JSON.stringify({ userid: currentState["userId-1"] }),
             })
             .then((res) => { return res.json() }
@@ -164,7 +165,10 @@ const state = {
         if(currentState.roomid) {
             fetch(API_BASE_URL + "/rooms/" + roomid + "?userid=" + userId, {
                 method: "get",
-                headers: { "content-type": "application/json" },
+                headers: { 
+                "content-type": "application/json", 
+                "Cross-Origin-Resource-Policy": "cross-origin"
+                },
             })
             .then((res) => { return res.json() }
                  ).then((data) => {
@@ -183,7 +187,8 @@ const state = {
 
         fetch(API_BASE_URL + "/rooms", {
           method: "post",
-          headers: { "content-type": "application/json" },
+          headers: { "content-type": "application/json",
+          "Cross-Origin-Resource-Policy": "cross-origin" },
           body: JSON.stringify({ name: currentState.name, id: currentState.id }),
         }).then(res => { return res.json() }
                ).then(data => {
@@ -198,22 +203,20 @@ const state = {
           
       },
 
-      //nuevo
     setOnline(){
-        const currentState = state.getState();
-        
-        const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
-       
-        onValue(roomRef, (snap)=> {
-            const playerOneOnline = snap.val()["userName-1"].online;
-            const playerTwoOnline = snap.val()["userName-2"].online;
-            
-            if(playerOneOnline == true && playerTwoOnline == true){
-                Router.go("/instructions")
-            }
-        })
+        const currentState = this.getState();
+        currentState["userOnline-1"] == true;
+        this.setState(currentState);
+        console.log("setonline", currentState)
+    },
 
-      
+    setOnlineRival(){
+        const currentState = this.getState();
+        const roomid = currentState.roomid;
+        const userId = currentState["userId-2"];
+
+        currentState["userOnline-2"] == true;
+        this.setState(currentState);
     },
 
     setScore(result) {
@@ -245,7 +248,8 @@ const state = {
         }
         return fetch(API_BASE_URL + "/rooms/" + roomid + "?userid=" + userId + move, {
             method: "post",
-            headers: { "content-type": "application/json" }, 
+            headers: { "content-type": "application/json" ,
+            "Cross-Origin-Resource-Policy": "cross-origin"}, 
         }).then((res)=> {res.json()})
           .then((r)=> { return r })
 

@@ -9,7 +9,7 @@ class WaitingRoom extends HTMLElement {
         this.render(); 
         const currentState = state.getState();
 
-        state.listenRoom()
+        // tengo problemas acá state.listenRoom()
         state.subscribe(()=> {
 
             const waitingRoom = location.pathname == "/waiting-room";

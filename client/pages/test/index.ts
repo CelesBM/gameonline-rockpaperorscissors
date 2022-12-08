@@ -24,7 +24,7 @@ class Test extends HTMLElement {
                 }
         })
         
-        state.setState(currentState)
+        //state.setState(currentState)
 
 
       }

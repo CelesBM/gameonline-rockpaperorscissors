@@ -6,11 +6,12 @@ class Instructions extends HTMLElement {
 
     connectedCallback(){
         this.render(); 
-        const buttonEl = this.querySelector(".button")
+        const button = this.querySelector(".button")
         const currentState = state.getState();
 
-        buttonEl.addEventListener("click", (e)=> {
+        button.addEventListener("click", (e)=> {
             e.preventDefault();
+            state.setOnlineRival();
             Router.go("/waiting-room");
         })
     }

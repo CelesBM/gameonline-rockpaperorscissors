@@ -2,42 +2,32 @@ import { Router } from "@vaadin/router";
 import { state } from "../../state";
 
 class ShareCode extends HTMLElement {
-    shadow: ShadowRoot;
-    
-    constructor() {
-      super();
-      this.shadow = this.attachShadow({ mode: 'open'});
-    }
 
-    //tiene que escuchar que hace el otro jugador y, cuando este en linea, ir a las instrucciones.
     connectedCallback() {
         this.render(); 
         const currentState = state.getState();
 
-        //state.listenRoom()
-        //state.subscribe(()=> {
-            //probando
-        //    state.setOnline();
-            
+        const button = this.querySelector(".button");
+        console.log(button)
 
+        //a partir del click, userOnline-1 pasa de false a true:
+        button.addEventListener("click", (e)=> {
+            e.preventDefault();
+            state.setOnline();
+            //Router.go("/waiting-room");
+        })
 
-            //esto estaba antes
-            //if(window.location.pathname.toString() == "/sharecode-room" && 
-            //currentState.playerOneOnline == true && currentState.playerTwoOnline == true){
-            //    Router.go("/instructions");
-            //}
-        //})
       }
 
     render(){
-        const div = document.createElement("div");
         
-        div.innerHTML=`
+        this.innerHTML=`
         <div class="container">
             <div class="container__text">
                 <p class="sharecode">Compartí el código:</p>
                 <b class="code">${state.getState().roomid}</b>
                 <p class="rival">con tu contrincante</p>
+                <button class="button">Listo</button>
             </div>
             <div class="container-hands">
                 <hands-comp class="hand" hand="rock"></hands-comp>
@@ -59,6 +49,7 @@ class ShareCode extends HTMLElement {
         .container__text{
             margin: 92px 0px;
             text-align: center;
+            line-height: 25px;
         }
         @media (min-width: 769px) {
             .container__text{        
@@ -69,6 +60,16 @@ class ShareCode extends HTMLElement {
             font-family: 'Indie Flower', cursive;
             font-size: 40px;
         }
+
+        .button{
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 27px;
+            color: #D8FCFC;
+            background-color: #006CFC;
+            border: 7px solid #001997;
+            border-radius: 10px;
+            padding: 3px 70px;
+            }
 
         .container-hands{
             display: flex;
@@ -91,8 +92,7 @@ class ShareCode extends HTMLElement {
                 }};
         `;
 
-    this.shadow.appendChild(style);
-    this.shadow.appendChild(div);
+    this.appendChild(style);
     };
   }
   
