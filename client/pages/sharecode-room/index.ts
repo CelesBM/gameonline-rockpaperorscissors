@@ -11,6 +11,11 @@ class ShareCode extends HTMLElement {
         console.log(button)
 
         //a partir del click, userOnline-1 pasa de false a true:
+        button.addEventListener("click", ()=>{
+            Router.go("waiting-room")
+        });
+
+
         button.addEventListener("click", (e)=> {
             e.preventDefault();
             state.setOnline();

@@ -1,6 +1,6 @@
 import { database } from "firebase-admin";
 import { runInThisContext } from "vm";
-import {ref, onValue} from "firebase/database"
+import {ref, onValue, connectDatabaseEmulator} from "firebase/database"
 import { rtdb } from "./db";
 import { captureRejectionSymbol } from "events";
 //import { Router } from "express";
@@ -63,14 +63,17 @@ const state = {
     },
 
     listenRoom(callback?){
+        console.log("rtdb", rtdb);
         const currentState = this.getState();
 
         const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
-       
+       //const roomRef = ref(rtdb, "rooms/")
+      
         onValue(roomRef, (snap)=> {
             currentState.rtdb = snap.val();
-            this.setState(currentState);
-            callback ? callback() : false;
+            console.log("prueba", currentState);
+            //this.setState(currentState);
+            //callback ? callback() : false;
         })
 
         console.log("listenRoom", currentState)

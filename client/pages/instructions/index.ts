@@ -9,11 +9,12 @@ class Instructions extends HTMLElement {
         const button = this.querySelector(".button")
         const currentState = state.getState();
 
-        button.addEventListener("click", (e)=> {
-            e.preventDefault();
-            state.setOnlineRival();
-            Router.go("/waiting-room");
-        })
+        button.addEventListener("click", (e)=>{
+            e.preventDefault()
+            state.setOnline()
+            Router.go("waiting-room")
+            
+        });
     }
   
     render(){
