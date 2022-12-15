@@ -8,12 +8,14 @@ class Instructions extends HTMLElement {
         this.render(); 
         const button = this.querySelector(".button")
         const currentState = state.getState();
+     
 
         button.addEventListener("click", (e)=>{
             e.preventDefault()
-            state.setOnline()
-            Router.go("waiting-room")
-            
+            state.setOnline("playerOne", ()=> {
+                state.listenRoom();
+                Router.go("waiting-room")
+            }); 
         });
     }
   

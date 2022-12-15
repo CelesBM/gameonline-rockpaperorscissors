@@ -1,6 +1,6 @@
 import { database } from "firebase-admin";
 import { runInThisContext } from "vm";
-import {ref, onValue, connectDatabaseEmulator} from "firebase/database"
+import {ref, onValue, connectDatabaseEmulator, update} from "firebase/database"
 import { rtdb } from "./db";
 import { captureRejectionSymbol } from "events";
 //import { Router } from "express";
@@ -10,6 +10,7 @@ import { callbackify } from "util";
 const API_BASE_URL = "http://localhost:3004";
    
 type Play = "piedra" | "papel" | "tijera";
+type Player =   "playerOne" | "playerTwo";
 type DataRoom = { id: number, }
 
 interface CreateRoom {
@@ -24,7 +25,6 @@ const state = {
     data: {
         "userId-1": "",
         "userId-2": "",
-        "aca estaba el userOnline": "",
         "userOnline-1": false,
         "userOnline-2": false,
         "userReady-1": false,
@@ -34,7 +34,7 @@ const state = {
         roomid: "",
         rtdbRoomid: "",
         rtdb: {},
-
+        
         currentGame: {
 			myPlay: "",
 			botPlay: "",
@@ -63,17 +63,13 @@ const state = {
     },
 
     listenRoom(callback?){
-        console.log("rtdb", rtdb);
         const currentState = this.getState();
 
         const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
-       //const roomRef = ref(rtdb, "rooms/")
       
         onValue(roomRef, (snap)=> {
             currentState.rtdb = snap.val();
-            console.log("prueba", currentState);
-            //this.setState(currentState);
-            //callback ? callback() : false;
+            this.setState(currentState);
         })
 
         console.log("listenRoom", currentState)
@@ -202,18 +198,29 @@ const state = {
                    this.setState(currentState);
                    callback ? callback() : false;
                    })
-          .catch(err => console.log(err))
-          
+          .catch(err => console.log(err))    
       },
 
-    setOnline(){
+    setOnline(ownerOrRival: Player, callback?){
         const currentState = this.getState();
-        currentState["userOnline-1"] == true;
-        this.setState(currentState);
-        console.log("setonline", currentState)
+
+        fetch("/ready", {
+             mode: "cors",
+             method: "patch",
+             headers: { "content-type": "application/json",},
+             body: JSON.stringify({ Player: ownerOrRival, rtdbRoomid: currentState.rtdbRoomid }),
+        }).then(res => { return res.json() }
+               ).then(data => {
+                   currentState.Player = data.Player;
+                   currentState.rtdbRoomid = data.rtdbRoomid;
+                   this.setState(currentState);
+                   callback ? callback() : false;
+                   })
+          .catch(err => console.log(err))
     },
 
     setOnlineRival(){
+        //aca tengo que escuchar lo del setonline del player 1
         const currentState = this.getState();
         const roomid = currentState.roomid;
         const userId = currentState["userId-2"];
@@ -237,7 +244,7 @@ const state = {
 		this.setState(currentState);
 	  },
 
-    setMove(move: Play){
+    setMove(move: Play, callback?){
 		const currentState = this.getState().currentGame;
         const roomid = currentState.roomid;
         const userId = currentState.userId;
@@ -258,6 +265,10 @@ const state = {
 
 		this.setScore();
 	},
+
+    setMovePlayerOne(){},
+
+    changePlayPlayerOne(){},
 
     whoWins(myPlay: Play, botPlay: Play) {
 		

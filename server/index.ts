@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as cors from "cors";
 import { firestore, rtdb } from "./database";
-import { json } from "body-parser";
+//import { json } from "body-parser";
 import { nanoid } from "nanoid";
 
 const app = express();
@@ -12,7 +12,10 @@ const port = 3004;
 const usersCollection = firestore.collection("users");
 const roomsCollection = firestore.collection("rooms");
 
-//ACA ME LOGUEO EN CASO DE QUE SEA UN NUEVO USUARIO
+//ACA E LOGUEO EN CASO DE QUE SEA UN NUEVO USUARIO
+
+
+
 app.post("/signin", function(req, res){
     const name = req.body.name;
     usersCollection.where("name", "==", name).get().then((searchResponse)=> {
@@ -48,10 +51,12 @@ app.post("/rooms", (req, res)=> {
             "player-1": {
                 "userName": "",
                 "userId": "",
+                 online: false,
               },
               "player-2": {
                 "userName": "",
                 "userId": "",
+                online: false,
               },
                 "owner": userid
            }).then(()=> {
@@ -77,7 +82,6 @@ app.post("/rooms", (req, res)=> {
 app.get("/rooms/:roomid", (req, res)=> {
     const {userid} = req.query;
     const {roomid} = req.params;
-
     usersCollection
     .doc(userid.toString())
     .get().then((doc)=> {
@@ -95,6 +99,14 @@ app.get("/rooms/:roomid", (req, res)=> {
         }
     })
 });
+
+app.patch("/ready", (req, res)=> {
+    const {Player} = req.body;
+    const {rtdbRoomid} = req.body;
+    const roomRef = rtdb.ref("/rooms/${rtdbRoomid}/${Player}")
+    roomRef.update({ online: true })
+    res.json({ message: "${Player} online"})
+})
 
 app.listen(port, ()=> {
     console.log(`app listening at http://localhost:${port}`);
