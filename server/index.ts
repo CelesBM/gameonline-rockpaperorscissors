@@ -3,6 +3,7 @@ import * as cors from "cors";
 import { firestore, rtdb } from "./database";
 //import { json } from "body-parser";
 import { nanoid } from "nanoid";
+import * as path from "path";
 
 const app = express();
 app.use(express.json());
@@ -37,10 +38,11 @@ app.post("/signin", function(req, res){
     })
 });
 
+
 //CREA UN ROOM Y ME DEVUELVE UN ID MAS SENCILLO, MAS CORTO
 
 app.post("/rooms", (req, res)=> {
-    const {userid} = req.body;
+    const {userid, name} = req.body;
     usersCollection
     .doc(userid.toString())
     .get()
@@ -48,25 +50,36 @@ app.post("/rooms", (req, res)=> {
         if(doc.exists) {
            const roomRef = rtdb.ref("rooms/" + nanoid());
            roomRef.set({
-            "player-1": {
+            creator: userid,
+            currentGame: { replay: false },
+            playerOne: {
                 "userName": "",
-                "userId": "",
-                 online: false,
+                //"userId": "",
+                creator: true,
+                start: false,
+                choice: "none",
+                score: 0,
               },
-              "player-2": {
+            playerTwo: {
                 "userName": "",
-                "userId": "",
-                online: false,
+                //"userId": "",
+                creator: false,
+                start: false,
+                choice: "none",
+                score: 0,
               },
-                "owner": userid
+                //"owner": userid
            }).then(()=> {
             const roomLongid = roomRef.key;
             const roomShortid = 1000 + Math.floor(Math.random() * 999);
             roomsCollection.doc(roomShortid.toString()).set({
                 rtdbRoomid: roomLongid,
+                creator: userid,
+                score: { playerOne: 0, playerTwo: 0 }
             }).then(()=> {
                 res.json({
-                    id: roomShortid
+                    id: roomShortid,
+                    roomLongid: roomLongid.toString(),
                 });
             })
            });
@@ -86,11 +99,11 @@ app.get("/rooms/:roomid", (req, res)=> {
     .doc(userid.toString())
     .get().then((doc)=> {
         if(doc.exists) {
-            roomsCollection
-            .doc(roomid).get()
+            roomsCollection.doc(roomid).get()
             .then((snap)=> {
                 const data = snap.data();
-                res.json(data);
+                //res.json(data);
+                res.json(data.roomLongid)
             })
         } else {
             res.status(401).json({
@@ -100,14 +113,32 @@ app.get("/rooms/:roomid", (req, res)=> {
     })
 });
 
+app.patch("/rival-player", (req, res)=> {
+    const {name} = req.body;
+    const {rtdbRoomid} = req.body;
+    const roomRef = rtdb.ref(`/rooms/${rtdbRoomid}/PlayerTwo`);
+    roomRef.update({ name });
+    res.json({ message: "nombre ok", name: name})
+})
+
 app.patch("/ready", (req, res)=> {
     const {Player} = req.body;
     const {rtdbRoomid} = req.body;
-    const roomRef = rtdb.ref("/rooms/${rtdbRoomid}/${Player}")
-    roomRef.update({ online: true })
-    res.json({ message: "${Player} online"})
+    const roomRef = rtdb.ref(`/rooms/${rtdbRoomid}/${Player}`)
+    roomRef.update({ start: true })
+    res.json({ message: `${Player} online`})
 })
+
+app.use(express.static("dist"));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../dist/index.html"));
+});
+
+//importar.
 
 app.listen(port, ()=> {
     console.log(`app listening at http://localhost:${port}`);
 });
+
+//app.use (3002);

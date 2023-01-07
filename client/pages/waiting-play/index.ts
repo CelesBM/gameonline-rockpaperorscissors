@@ -2,46 +2,46 @@ import { Router } from "@vaadin/router";
 import { createInflateRaw } from "zlib";
 import { state } from "../../state";
 
-class WaitingRoom extends HTMLElement {
+//UNA VEZ QUE AMBOS ELIJAN UNA JUGADA DEBE IR A LOS RESULTADOS, SI NO, A INSTRUCTIONS.
+class WaitingPlay extends HTMLElement {
     shadow: ShadowRoot;
     timer: number = 8;
 
-    playStart(){
-        const interval = setInterval(()=> {
+    //playStart(){
+        //const interval = setInterval(()=> {
         
-            this.render(); 
-            const currentState = state.getState();
-            const rtdb = currentState.rtdb;
+            //this.render(); 
+            //const currentState = state.getState();
+            //const rtdb = currentState.rtdb;
     
-            const playerOneReady = rtdb.playerOne.start;
-            const playerTwoReady = rtdb.playerTwo.start;
+            //const playerOneReady = rtdb.playerOne.start;
+            //const playerTwoReady = rtdb.playerTwo.start;
     
-            if(playerOneReady && playerTwoReady) {
-                Router.go("/game")
-            } else if(this.timer == 0) {
-                clearInterval(interval);
-                Router.go("/instructions");
-            }
-            this.timer--
-            }, 3000)
-    }
+            //if(playerOneReady && playerTwoReady) {
+            //    Router.go("/game")
+            //} else if(this.timer == 0) {
+            //    clearInterval(interval);
+            //    Router.go("/instructions");
+            //}
+            //this.timer--
+            //}, 3000)
+    //}
 
-    connectedCallback(){
-        this.playStart(); 
-    }
+    //connectedCallback(){
+    //    this.playStart(); 
+   // }
    
    
   
     render(){
 
         const currentState = state.getState();
-        const userName = currentState.userName;
         
         this.innerHTML=`
         <div class="container">
             <header-comp class="header"></header-comp>
             <div class="container__text">
-                <p class="text">Esperando a que ${userName} presione ¡Jugar! ...</p>
+                <p class="text">Esperando la jugada de tu contrincante ...</p>
             </div> 
             <div class="container-hands">
                 <hands-comp class="hand" hand="rock"></hands-comp>
@@ -93,4 +93,4 @@ class WaitingRoom extends HTMLElement {
     };
   }
   
-  customElements.define("waitingroom-comp", WaitingRoom);
+  customElements.define("waitingplay-comp", WaitingPlay);

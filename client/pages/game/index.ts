@@ -10,10 +10,7 @@ class Game extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: 'open'});
-        //this.userName = state.getState().userName;
-        //this.rivalName = state.getState().rivalName;
-        //this.roomid = state.getState().roomid;
-        this.render();
+        //this.render();
       }
 
     render() {
@@ -82,11 +79,13 @@ class Game extends HTMLElement {
 
            
         })
+
+       
             
         })
       
 
-    
+       
 
       style.innerHTML=`
       .container{
@@ -100,6 +99,35 @@ class Game extends HTMLElement {
     this.appendChild(div);
     this.appendChild(style);
     }
+
+
+
+
+    moveChoice(){
+        this.render();
+        const currentState = state.getState();
+
+        const rockEl = this.shadow.querySelector(".hand-rock");
+        const paperEl = this.shadow.querySelector(".hand-paper");
+        const scissorEl = this.shadow.querySelector(".hand-scissor");
+
+       // rockEl.addEventListener("click", ()=> {
+       //     if(currentState.creator) {
+       //         state.setMove("playerOne", "piedra", ()=> {
+       //             Router.go("/waiting-room")
+       //         });
+       //     } else {
+       //         state.setMove("playerTwo", "piedra", ()=> {
+       //             Router.go("/waiting-room")
+       //         })
+       //     }
+
+       // })
+    }
+
+
+
+
   }
 
   customElements.define("game-comp", Game);

@@ -9,13 +9,20 @@ class Instructions extends HTMLElement {
         const button = this.querySelector(".button")
         const currentState = state.getState();
      
-
-        button.addEventListener("click", (e)=>{
-            e.preventDefault()
-            state.setOnline("playerOne", ()=> {
-                state.listenRoom();
-                Router.go("waiting-room")
-            }); 
+        //TRABAJAR SOBRE ESTO
+        button.addEventListener("click", (e)=> {
+            e.preventDefault();
+            if(currentState.creator) {
+                state.playerReady("playerOne", () => {
+                    state.listenRoom();
+                    Router.go("/waiting-room");
+                });
+            } else if(!currentState.creator) {
+                state.playerReady("playerTwo", () => {
+                    state.listenRoom();
+                    Router.go("/waiting-room")
+                });
+            }
         });
     }
   
@@ -23,9 +30,8 @@ class Instructions extends HTMLElement {
 
         this.innerHTML = `
         <div class="container">
-            <header-comp class="header"></header-comp>
             <div class="container__text">
-                <p class="instructions">Presioná jugar y elegí: piedra, papel o tijera antes de que pasen los 3 segundos</p>
+                <p class="instructions">Presioná jugar y elegí: piedra, papel o tijera antes de que pasen los 5 segundos</p>
                 <button class="button">¡Jugar!</button>
             </div>
             <div class="container-hands">
@@ -48,6 +54,7 @@ class Instructions extends HTMLElement {
         
         .container__text{
             margin: -5px;
+            margin-top: 60px;
         }
 
         .instructions{

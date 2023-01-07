@@ -10,28 +10,29 @@ class PreviousGame extends HTMLElement {
     }
 
     connectedCallback() {
+        this.addListeners();
+    }
+
+    addListeners() {
         this.render();
         const currentState = state.getState();
-        
-        const button = this.shadow.querySelector(".button");
         const form =  this.shadow.querySelector(".form");
   
         form.addEventListener("submit", (e) => {
             e.preventDefault();
+           
             const target = e.target as any;
-            currentState.roomid = target.code.value;
+            const roomid = target.code.value; //me lee el input del código con el n° del mismo.
+            currentState.roomid = roomid;
+            currentState.creator = false;
+            state.setState(currentState);
+            //reconoce el roomid (el código corto) y que creator= false.
+            state.setName(target.name.value);
+            Router.go("/instructions");
 
             state.signIn(()=> {
-                state.listenRoom();
-            })
-
-            state.setRivalName(target.name.value);
-            state.signInRival(()=> {
-                state.accessToRoom(()=> {
-                    state.listenRoom()
-                    Router.go("/instructions");
-                })
-            });        
+                state.accessToRoom(()=> { state.rivalPlayer() })
+            })    
         });
     }
 

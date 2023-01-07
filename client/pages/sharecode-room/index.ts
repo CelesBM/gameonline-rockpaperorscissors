@@ -6,25 +6,16 @@ class ShareCode extends HTMLElement {
     connectedCallback() {
         this.render(); 
         const currentState = state.getState();
-
-        const button = this.querySelector(".button");
-        console.log(button)
-
-        //a partir del click, userOnline-1 pasa de false a true:
+        //const roomid = currentState.roomid; //console.log(roomid) lee el roomid corto
+        const button = this.querySelector(".button"); //console.log(button) reconoce el button
+    
         button.addEventListener("click", ()=>{
-            Router.go("waiting-room")
+            Router.go("/instructions")
         });
-
-
-        button.addEventListener("click", (e)=> {
-            e.preventDefault();
-            state.setOnline();
-            //Router.go("/waiting-room");
-        })
-
       }
 
     render(){
+       
         
         this.innerHTML=`
         <div class="container">

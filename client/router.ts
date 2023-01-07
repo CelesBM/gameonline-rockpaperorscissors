@@ -11,4 +11,5 @@ router.setRoutes([
     {path: "/instructions", component: "instructions-comp"},
     {path: "/waiting-room", component: "waitingroom-comp"},
     {path: "/game", component: "game-comp"},
+    {path: "/waiting-play", component: "waitingplay-comp"},
 ]);

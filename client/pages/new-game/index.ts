@@ -10,16 +10,15 @@ export class NewGame extends HTMLElement {
       form.addEventListener("submit", (e)=> {
         e.preventDefault();
         const target = e.target as any;
-        state.setName(target.name.value);
-        state.signIn(()=> {
-          state.askNewRoom(()=> {
-            state.accessToRoom(()=> {
-              Router.go("/sharecode-room");
-            })
-          })
-        })
+
+        Router.go("/sharecode-room");
+        state.setName(target.name.value); 
+        state.signIn(()=> { state.askNewRoom(()=> { state.accessToRoom() })
+        });
       })
     }
+
+    //creo el userName con su userId y el id de la room para ingresar a la sala. Acá todo ok.
 
     render() {
       this.innerHTML = `

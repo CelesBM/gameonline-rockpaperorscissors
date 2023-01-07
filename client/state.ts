@@ -3,38 +3,27 @@ import { runInThisContext } from "vm";
 import {ref, onValue, connectDatabaseEmulator, update} from "firebase/database"
 import { rtdb } from "./db";
 import { captureRejectionSymbol } from "events";
-//import { Router } from "express";
 import { Router } from "@vaadin/router";
 import { callbackify } from "util";
 
 const API_BASE_URL = "http://localhost:3004";
-   
+//type User = {name: string, userId: string}; 
 type Play = "piedra" | "papel" | "tijera";
 type Player =   "playerOne" | "playerTwo";
-type DataRoom = { id: number, }
-
-interface CreateRoom {
-    roomid: number,
-    rtdbRoomid: number,
-    ["userName-1"]: string,
-    ["userName-2"]: string
-  }
+//type DataRoom = { id: number, };
 
 const state = {
 
     data: {
-        "userId-1": "",
-        "userId-2": "",
-        "userOnline-1": false,
-        "userOnline-2": false,
-        "userReady-1": false,
-        "userReady-2": false,
-        "ready": "",
 
+        userId:"",
+        userName: "",
+        rtdbData: {}, 
         roomid: "",
         rtdbRoomid: "",
         rtdb: {},
-        
+        creator: "",
+
         currentGame: {
 			myPlay: "",
 			botPlay: "",
@@ -65,82 +54,67 @@ const state = {
     listenRoom(callback?){
         const currentState = this.getState();
 
-        const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);
-      
+        const roomRef = ref(rtdb, "/rooms" + currentState.rtdbRoomid);  
         onValue(roomRef, (snap)=> {
             currentState.rtdb = snap.val();
             this.setState(currentState);
         })
-
         console.log("listenRoom", currentState)
     },
 
     setName(userName) {
         const currentState = this.getState();
-        currentState["userName-1"] = userName;
+        currentState.userName = userName
         this.setState(currentState);
     },
     
     signIn(callback?){
         const currentState = this.getState();
 
-        if(currentState["userName-1"]) {
+        if(currentState.userName) {
             fetch(API_BASE_URL + "/signin", {
                 method: "post",
-                headers: { "content-type": "application/json", 
-                           "Cross-Origin-Resource-Policy": "cross-origin"},
-                body: JSON.stringify({ name: currentState["userName-1"] }),
-            })
-           .then((res) => { return res.json() } 
-                ).then((data) => {
-                     console.log("data:", data)
-                     currentState["userId-1"] = data.id;
-                     this.setState(currentState);
-                     callback ? callback() : false;
-                     })
-                .catch(err => console.log(err))
-        } 
-    },
-
-    setRivalName(userRivalName) {
-        const currentState = this.getState();
-        currentState["userName-2"] = userRivalName;
-        this.setState(currentState);
-    },
-
-    signInRival(callback){
-        const currentState = this.getState();
-
-        if(currentState["userName-2"]){
-            fetch(API_BASE_URL + "/signin", {
-                method: "post",
-                headers: { "content-type": "application/json", 
-                           "Cross-Origin-Resource-Policy": "cross-origin"},
-                body: JSON.stringify({ name: currentState["userName-2"] })
-            })
-            .then((res) => { return res.json() }
-                 ).then((data) => {
-                        currentState["userId-2"] = data.id;
-                        this.setState(currentState);
-                        callback ? callback() : false;
-                 })
-                 .catch(err => console.log(err))
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ name: currentState.userName })
+            }).then((res) => { return res.json() })
+              .then((data) => { 
+                console.log("data:", data),
+                currentState.userId = data.id;
+                this.setState(currentState);
+                callback ? callback(): false;
+            }).catch(err => console.log(err))
         }
     },
 
+    rivalPlayer(callback?){
+        const currentState = state.getState();
+        const rtdbRoomid = currentState.rtdbRoomid;
+        const name = currentState.name;
+        this.setState(currentState);
+
+        fetch(API_BASE_URL + "/rival-player", {
+            mode: "cors",
+            method: "patch",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify( {name: name, rtdbRoomid: rtdbRoomid})
+        }); 
+      },
+    
     askNewRoom(callback?){
         const currentState = this.getState();
 
-        if(currentState["userId-1"]) {
+        if(currentState.userId) {
             fetch(API_BASE_URL + "/rooms", {
                 method: "post",
-                headers: { "content-type": "application/json",
-                            "Cross-Origin-Resource-Policy": "cross-origin" },
-                body: JSON.stringify({ userid: currentState["userId-1"] }),
+                headers: { "content-type": "application/json", },
+                body: JSON.stringify({ userid: currentState.userId, name: currentState.name }),
             })
             .then((res) => { return res.json() }
-                 ).then((data: DataRoom) => {
+                 ).then((data//: DataRoom//
+                 ) => {
                      const roomid = data.id;
+                     const rtdbRoomid = data.roomLongid;
+                     currentState.rtdbRoomid = rtdbRoomid
                      currentState.roomid = roomid;
                      this.setState(currentState);
                      callback ? callback() : false;
@@ -149,36 +123,26 @@ const state = {
         } 
     },
 
-    accessToRoom(callback?) {
-        const currentState = this.getState();
-
+    accessToRoom(callback?){
+        const currentState = this.getState;
         const roomid = currentState.roomid;
-        let userId = currentState["userId-1"] || currentState["userId-2"];
-        
-        if(currentState["userId-2"] == "") {
-            userId = currentState["userId-1"]
-        } else if(currentState["userId-2"] == "") {
-            userId = currentState["userId-1"]
-        }
+        const userId = currentState.userId;
+        const rtdbRoomid = currentState.rtdbRoomid;
+
+        console.log("roomid", currentState.roomid)
+                console.log("rtdb", currentState.rtdbRoomid)
 
         if(currentState.roomid) {
             fetch(API_BASE_URL + "/rooms/" + roomid + "?userid=" + userId, {
                 method: "get",
-                headers: { 
-                "content-type": "application/json", 
-                "Cross-Origin-Resource-Policy": "cross-origin"
-                },
+                headers: { "content-type": "application/json"}
+            }).then(res => { return res.json() }
+             ).then((data)=> {
+                currentState.rtdbRoomid = data.rtdbRoomid;  
+                this.setState(currentState);
+                callback ? callback(): false;
             })
-            .then((res) => { return res.json() }
-                 ).then((data) => {
-                     currentState.rtdbRoomid = data.rtdbRoomid;
-                     this.setState(currentState);
-                     callback ? callback() : false;
-                    });
-        } else {
-            console.error("roomid doesn't exist")
-           
-        }
+        } 
     },
 
     createRoom(callback?) {
@@ -186,47 +150,38 @@ const state = {
 
         fetch(API_BASE_URL + "/rooms", {
           method: "post",
-          headers: { "content-type": "application/json",
-          "Cross-Origin-Resource-Policy": "cross-origin" },
+          headers: { "content-type": "application/json" },
           body: JSON.stringify({ name: currentState.name, id: currentState.id }),
         }).then(res => { return res.json() }
                ).then(data => {
                    currentState.roomid = data.roomid;
                    currentState.rtdbRoomid = data.rtdbRoomid;
-                   currentState["userName-1"] = data["userName-1"];
-                   currentState["userName-2"] = data["userName-2"];
+                   currentState.userName = data.userName;
                    this.setState(currentState);
                    callback ? callback() : false;
                    })
           .catch(err => console.log(err))    
       },
 
-    setOnline(ownerOrRival: Player, callback?){
+        //400 BAD REQUEST //postman lo lee bien   NO LEE EL RTDBROOMID PORQUE APARECEN "" CUANDO INICIO JUEGO, VER
+    playerReady(ownerOrRival: Player, callback?){
         const currentState = this.getState();
+       const rtdbRoomid = currentState.rtdbRoomid;
+        console.log(ownerOrRival, rtdbRoomid)
 
-        fetch("/ready", {
+        fetch(API_BASE_URL + "/ready", {
              mode: "cors",
              method: "patch",
-             headers: { "content-type": "application/json",},
+             headers: { "content-type": "application/json"},
              body: JSON.stringify({ Player: ownerOrRival, rtdbRoomid: currentState.rtdbRoomid }),
         }).then(res => { return res.json() }
                ).then(data => {
                    currentState.Player = data.Player;
                    currentState.rtdbRoomid = data.rtdbRoomid;
                    this.setState(currentState);
+                   
                    callback ? callback() : false;
-                   })
-          .catch(err => console.log(err))
-    },
-
-    setOnlineRival(){
-        //aca tengo que escuchar lo del setonline del player 1
-        const currentState = this.getState();
-        const roomid = currentState.roomid;
-        const userId = currentState["userId-2"];
-
-        currentState["userOnline-2"] == true;
-        this.setState(currentState);
+                   }).catch(err => console.log(err))
     },
 
     setScore(result) {
